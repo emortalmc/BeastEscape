@@ -7,7 +7,7 @@ plugins {
     // Kotlinx serialization for any data format
     kotlin("plugin.serialization") version "1.6.10"
     // Shade the plugin
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.1.1"
     // Allow publishing
     `maven-publish`
 
@@ -38,7 +38,8 @@ dependencies {
     compileOnly(kotlin("reflect"))
 
     // Compile Minestom into project
-    compileOnly("com.github.Minestom:Minestom:-SNAPSHOT")
+    compileOnly("com.github.emortaldev:Minestom:d25ea275e4")
+    compileOnly("com.github.EmortalMC:Immortal:dfaa9718fd")
 
     // import kotlinx serialization
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
@@ -73,12 +74,6 @@ tasks {
 
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -92,7 +87,7 @@ publishing {
 }
 
 val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions.jvmTarget = JavaVersion.VERSION_16.toString()
+compileKotlin.kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
 
 compileKotlin.kotlinOptions {
     freeCompilerArgs = listOf("-Xinline-classes")
