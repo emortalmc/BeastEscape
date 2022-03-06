@@ -11,6 +11,7 @@ import net.minestom.server.entity.Player
 import net.minestom.server.entity.metadata.other.AreaEffectCloudMeta
 import net.minestom.server.timer.Task
 import world.cepi.kstom.Manager
+import world.cepi.kstom.Manager.bossBar
 import world.cepi.kstom.util.asVec
 import world.cepi.particle.Particle
 import world.cepi.particle.ParticleType
@@ -43,7 +44,9 @@ class Freezer(
     }.repeat(Duration.ofMillis(150)).schedule()
 
     init {
-        game.showBossBar(bossBar)
+        game.players.forEach {
+            it.showBossBar(bossBar)
+        }
         game.frozenTeam.add(heldPlayer)
         heldPlayer.isGlowing = true
 
@@ -52,7 +55,7 @@ class Freezer(
         freezeMeta.radius = 0f
         freezeMeta.isHasNoGravity = true
         freezeMeta.setNotifyAboutChanges(true)
-        freezeEntity.setInstance(game.instance, position.add(0.5, 0.5, 0.5))
+        freezeEntity.setInstance(game.instance, position.add(0.0, 0.0, 0.0))
 
         freezeEntity.addPassenger(heldPlayer)
 
@@ -64,12 +67,15 @@ class Freezer(
         holoMeta.isHasNoGravity = true
         holoMeta.setNotifyAboutChanges(true)
         hologram.updateViewableRule { game.survivorsTeam.players.contains(it) && !game.frozenTeam.players.contains(it) }
-        hologram.setInstance(game.instance, position.add(0.5, 2.0, 0.5))
+        hologram.setInstance(game.instance, position.add(0.0, 2.0, 0.0))
 
-        game.freezerMap[heldPlayer] = this
+        game.freezerPosMap[position] = this
+        game.freezerPlayerMap[heldPlayer] = this
+        }
     }
 
     fun destroy() {
+        println("Destrroyed")
         freezeEntity.removePassenger(heldPlayer)
 
         hologram.remove()
@@ -77,9 +83,10 @@ class Freezer(
         particleTask.cancel()
         game.hideBossBar(bossBar)
         heldPlayer.isGlowing = false
-        game.frozenTeam.remove(heldPlayer)
 
-        game.freezerMap.remove(heldPlayer)
+        game.frozenTeam.remove(heldPlayer)
+        game.freezerPosMap.remove(position)
+        game.freezerPlayerMap.remove(heldPlayer)
     }
 
 }
