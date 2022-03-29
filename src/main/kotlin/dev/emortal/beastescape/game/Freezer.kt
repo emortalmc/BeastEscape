@@ -71,11 +71,9 @@ class Freezer(
 
         game.freezerPosMap[position] = this
         game.freezerPlayerMap[heldPlayer] = this
-        }
     }
 
     fun destroy() {
-        println("Destrroyed")
         freezeEntity.removePassenger(heldPlayer)
 
         hologram.remove()
